@@ -1,9 +1,10 @@
-from flask import Flask, request, jsonify, render_template, redirect, url_for, session
+from flask import Flask, render_template, request, redirect, url_for, jsonify, session
 from werkzeug.security import generate_password_hash, check_password_hash
 from dotenv import load_dotenv
 import sqlite3, os
 
 load_dotenv(dotenv_path=os.path.join('config', '.env'))
+
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'
 
@@ -24,7 +25,7 @@ def init_db():
 
 @app.route('/')
 def home():
-    return render_template("home.html")
+    return render_template('home.html')
 
 if __name__ == '__main__':
     init_db()
