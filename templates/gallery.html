@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Gallery</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@3.3.0/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="p-6 dark:bg-gray-900 dark:text-white">
+  <a href="/" class="text-blue-400">&larr; Back to Events</a>
+  <h1 class="text-2xl font-bold mb-4">📸 Event Gallery</h1>
+
+  <form action="/upload/{{ folder_id }}" method="POST" enctype="multipart/form-data" class="mb-4">
+    <input type="file" name="file" required>
+    <button class="bg-blue-600 text-white px-4 py-1 rounded">Upload</button>
+  </form>
+
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+    {% for file in files %}
+      <div class="bg-white dark:bg-gray-800 p-3 rounded shadow">
+        <img src="{{ file.thumb }}" alt="{{ file.title }}" class="rounded w-full mb-2" />
+        <div>❤️ {{ file.likes }} <button onclick="like('{{ file.id }}')" class="text-red-500 text-sm">Like</button></div>
+        <form onsubmit="comment(event, '{{ file.id }}')">
+          <input type="text" name="name" placeholder="Your name" class="border rounded p-1 w-full mt-2">
+          <input type="text" name="text" placeholder="Add a comment..." class="border rounded p-1 w-full mt-1">
+          <button class="bg-gray-700 text-white px-2 py-1 mt-1 rounded">Post</button>
+        </form>
+        <div class="text-sm mt-2">
+          {% for c in file.comments %}
+          <p><strong>{{ c.name }}</strong>: {{ c.text }} <em class="text-xs text-gray-400">({{ c.timestamp }})</em></p>
+          {% endfor %}
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+
+  <script>
+    async function like(id) {
+      await fetch('/like/' + id, {method: 'POST'});
+      location.reload();
+    }
+    async function comment(e, id) {
+      e.preventDefault();
+      const form = e.target;
+      const data = new FormData(form);
+      await fetch('/comment/' + id, {method: 'POST', body: data});
+      location.reload();
+    }
+  </script>
+</body>
+</html>
