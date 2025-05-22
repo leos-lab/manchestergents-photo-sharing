@@ -1,4 +1,0 @@
-Flask
-PyDrive2
-werkzeug
-python-dotenv
